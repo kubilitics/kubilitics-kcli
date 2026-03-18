@@ -1,7 +1,7 @@
 # Binaries
 bin/
-kcli
-kcli.exe
+/kcli
+/kcli.exe
 *.exe
 *.dll
 *.so
