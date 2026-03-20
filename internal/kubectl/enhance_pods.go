@@ -75,20 +75,21 @@ func enhancePods(kubeconfigPath, ctx, namespace string, modifiers []string, allN
 	})
 	table.AddAgeColumn()
 
-	// Modifier columns
+	// Modifier columns — PriorityAlways because user explicitly requested them.
+	// They must NEVER be hidden by the responsive system.
 	modifierColumns := map[string]output.Column{
-		"ip":   {Name: "IP", Priority: output.PrioritySecondary, MinWidth: 12, MaxWidth: 18, Align: output.Left},
-		"node": {Name: "NODE", Priority: output.PrioritySecondary, MinWidth: 15, MaxWidth: 40, Align: output.Left},
-		"labels": {Name: "LABELS", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 60, Align: output.Left,
+		"ip":   {Name: "IP", Priority: output.PriorityAlways, MinWidth: 12, MaxWidth: 18, Align: output.Left},
+		"node": {Name: "NODE", Priority: output.PriorityAlways, MinWidth: 12, MaxWidth: 40, Align: output.Left},
+		"labels": {Name: "LABELS", Priority: output.PriorityAlways, MinWidth: 15, MaxWidth: 60, Align: output.Left,
 			ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }},
-		"images": {Name: "IMAGES", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 50, Align: output.Left},
-		"sc":     {Name: "CONDITIONS", Priority: output.PriorityExtended, MinWidth: 15, MaxWidth: 50, Align: output.Left},
-		"ports":  {Name: "PORTS", Priority: output.PrioritySecondary, MinWidth: 8, MaxWidth: 25, Align: output.Left},
-		"qos":    {Name: "QOS", Priority: output.PrioritySecondary, MinWidth: 10, MaxWidth: 15, Align: output.Left},
-		"sa":         {Name: "SERVICE ACCOUNT", Priority: output.PriorityExtended, MinWidth: 12, MaxWidth: 30, Align: output.Left},
-		"containers": {Name: "CONTAINERS", Priority: output.PriorityExtended, MinWidth: 15, MaxWidth: 50, Align: output.Left},
-		"requests":   {Name: "REQUESTS", Priority: output.PriorityExtended, MinWidth: 15, MaxWidth: 40, Align: output.Left},
-		"limits":     {Name: "LIMITS", Priority: output.PriorityExtended, MinWidth: 15, MaxWidth: 40, Align: output.Left},
+		"images":     {Name: "IMAGES", Priority: output.PriorityAlways, MinWidth: 15, MaxWidth: 50, Align: output.Left},
+		"sc":         {Name: "CONDITIONS", Priority: output.PriorityAlways, MinWidth: 12, MaxWidth: 50, Align: output.Left},
+		"ports":      {Name: "PORTS", Priority: output.PriorityAlways, MinWidth: 6, MaxWidth: 25, Align: output.Left},
+		"qos":        {Name: "QOS", Priority: output.PriorityAlways, MinWidth: 8, MaxWidth: 15, Align: output.Left},
+		"sa":         {Name: "SERVICE ACCOUNT", Priority: output.PriorityAlways, MinWidth: 10, MaxWidth: 30, Align: output.Left},
+		"containers": {Name: "CONTAINERS", Priority: output.PriorityAlways, MinWidth: 10, MaxWidth: 50, Align: output.Left},
+		"requests":   {Name: "REQUESTS", Priority: output.PriorityAlways, MinWidth: 12, MaxWidth: 40, Align: output.Left},
+		"limits":     {Name: "LIMITS", Priority: output.PriorityAlways, MinWidth: 12, MaxWidth: 40, Align: output.Left},
 	}
 
 	for _, mod := range modifiers {

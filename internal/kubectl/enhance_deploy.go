@@ -64,14 +64,14 @@ func enhanceDeployments(kubeconfigPath, ctx, namespace string, modifiers []strin
 
 	modifierColumns := map[string][]output.Column{
 		"replicas": {
-			{Name: "DESIRED", Priority: output.PrioritySecondary, MinWidth: 7, MaxWidth: 10, Align: output.Right},
-			{Name: "CURRENT", Priority: output.PrioritySecondary, MinWidth: 7, MaxWidth: 10, Align: output.Right},
+			{Name: "DESIRED", Priority: output.PriorityAlways, MinWidth: 7, MaxWidth: 10, Align: output.Right},
+			{Name: "CURRENT", Priority: output.PriorityAlways, MinWidth: 7, MaxWidth: 10, Align: output.Right},
 		},
-		"images":     {{Name: "IMAGES", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 50, Align: output.Left}},
+		"images":     {{Name: "IMAGES", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 50, Align: output.Left}},
 		"strategy":   {{Name: "STRATEGY", Priority: output.PrioritySecondary, MinWidth: 12, MaxWidth: 18, Align: output.Left}},
-		"labels":     {{Name: "LABELS", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 60, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }}},
-		"selectors":  {{Name: "SELECTORS", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 50, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }}},
-		"conditions": {{Name: "CONDITIONS", Priority: output.PriorityExtended, MinWidth: 15, MaxWidth: 50, Align: output.Left}},
+		"labels":     {{Name: "LABELS", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 60, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }}},
+		"selectors":  {{Name: "SELECTORS", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 50, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }}},
+		"conditions": {{Name: "CONDITIONS", Priority: output.PriorityAlways, MinWidth: 15, MaxWidth: 50, Align: output.Left}},
 	}
 
 	for _, mod := range modifiers {

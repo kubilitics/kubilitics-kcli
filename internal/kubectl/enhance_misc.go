@@ -369,7 +369,7 @@ func enhanceEvents(kubeconfigPath, ctx, namespace string, modifiers []string, al
 	table.AddColumn(output.Column{Name: "FROM", Priority: output.PrioritySecondary, MinWidth: 12, MaxWidth: 25, Align: output.Left,
 		ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted },
 	})
-	table.AddColumn(output.Column{Name: "MESSAGE", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 60, Align: output.Left})
+	table.AddColumn(output.Column{Name: "MESSAGE", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 60, Align: output.Left})
 
 	for _, event := range eventList.Items {
 		table.AddRow([]string{
@@ -443,10 +443,10 @@ func enhanceStatefulSets(kubeconfigPath, ctx, namespace string, modifiers []stri
 			{Name: "DESIRED", Priority: output.PrioritySecondary, MinWidth: 7, MaxWidth: 10, Align: output.Right},
 			{Name: "CURRENT", Priority: output.PrioritySecondary, MinWidth: 7, MaxWidth: 10, Align: output.Right},
 		},
-		"images":     {{Name: "IMAGES", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 50, Align: output.Left}},
-		"labels":     {{Name: "LABELS", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 60, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }}},
-		"selectors":  {{Name: "SELECTORS", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 50, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }}},
-		"conditions": {{Name: "CONDITIONS", Priority: output.PriorityExtended, MinWidth: 15, MaxWidth: 50, Align: output.Left}},
+		"images":     {{Name: "IMAGES", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 50, Align: output.Left}},
+		"labels":     {{Name: "LABELS", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 60, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }}},
+		"selectors":  {{Name: "SELECTORS", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 50, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }}},
+		"conditions": {{Name: "CONDITIONS", Priority: output.PriorityAlways, MinWidth: 15, MaxWidth: 50, Align: output.Left}},
 	}
 	for _, mod := range modifiers {
 		if cols, ok := modifierCols[mod]; ok {
@@ -559,11 +559,11 @@ func enhanceDaemonSets(kubeconfigPath, ctx, namespace string, modifiers []string
 	table.AddAgeColumn()
 
 	modifierCols := map[string]output.Column{
-		"images":        {Name: "IMAGES", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 50, Align: output.Left},
-		"labels":        {Name: "LABELS", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 60, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }},
-		"selectors":     {Name: "SELECTORS", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 50, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }},
-		"node-selector": {Name: "NODE SELECTOR", Priority: output.PriorityExtended, MinWidth: 20, MaxWidth: 50, Align: output.Left},
-		"conditions":    {Name: "CONDITIONS", Priority: output.PriorityExtended, MinWidth: 15, MaxWidth: 50, Align: output.Left},
+		"images":        {Name: "IMAGES", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 50, Align: output.Left},
+		"labels":        {Name: "LABELS", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 60, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }},
+		"selectors":     {Name: "SELECTORS", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 50, Align: output.Left, ColorFunc: func(string) lipgloss.Style { return output.GetTheme().Muted }},
+		"node-selector": {Name: "NODE SELECTOR", Priority: output.PriorityAlways, MinWidth: 20, MaxWidth: 50, Align: output.Left},
+		"conditions":    {Name: "CONDITIONS", Priority: output.PriorityAlways, MinWidth: 15, MaxWidth: 50, Align: output.Left},
 	}
 	for _, mod := range modifiers {
 		if col, ok := modifierCols[mod]; ok {
