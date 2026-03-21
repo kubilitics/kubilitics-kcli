@@ -295,17 +295,26 @@ func (a *app) showActionMenu(reader *bufio.Reader, resourceType, name, namespace
 			continue
 		}
 
-		fmt.Fprintf(os.Stderr, "\n  %s\n\n",
+		fmt.Fprintf(os.Stderr, "\n  %s\n",
 			theme.Muted.Render(fmt.Sprintf("→ kcli %s", strings.Join(args, " "))))
+
+		// Show helpful context for exec
+		if input == "x" || input == "exec" {
+			fmt.Fprintf(os.Stderr, "  %s\n\n",
+				theme.Info.Render("Entering container shell... (type 'exit' or Ctrl+D to return)"))
+		} else {
+			fmt.Fprintln(os.Stderr)
+		}
 
 		// Execute the action
 		if err := a.runKubectl(args); err != nil {
-			fmt.Fprintf(os.Stderr, "\n  %s\n", theme.Error.Render(fmt.Sprintf("Error: %v", err)))
+			// Don't show error for signal termination (Ctrl+C from exec)
+			if !strings.Contains(err.Error(), "exit 130") {
+				fmt.Fprintf(os.Stderr, "\n  %s\n", theme.Error.Render(fmt.Sprintf("Error: %v", err)))
+			}
 		}
 
 		// Stay on the SAME resource — loop back to action menu
-		// User sees logs, then can immediately describe, exec, etc.
-		// Only [Q] goes back to resource selection.
 		fmt.Fprintf(os.Stderr, "\n%s\n",
 			theme.Muted.Render("  ─────────────────────────────────────"))
 	}
