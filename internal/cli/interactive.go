@@ -72,6 +72,132 @@ func actionsForResource(resourceType string) []resourceAction {
 			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
 			{Key: "del", Label: "Delete", Description: "Delete resource"},
 		}
+	case "statefulset", "statefulsets", "sts":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "l", Label: "Logs", Description: "Stream logs (all pods)"},
+			{Key: "s", Label: "Scale", Description: "Scale replicas"},
+			{Key: "r", Label: "Restart", Description: "Rolling restart"},
+			{Key: "e", Label: "Edit", Description: "Edit resource"},
+			{Key: "del", Label: "Delete", Description: "Delete resource"},
+		}
+	case "daemonset", "daemonsets", "ds":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "l", Label: "Logs", Description: "Stream logs (all pods)"},
+			{Key: "r", Label: "Restart", Description: "Rolling restart"},
+			{Key: "e", Label: "Edit", Description: "Edit resource"},
+			{Key: "del", Label: "Delete", Description: "Delete resource"},
+		}
+	case "job", "jobs":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "l", Label: "Logs", Description: "Stream job logs"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete job"},
+		}
+	case "cronjob", "cronjobs", "cj":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "su", Label: "Suspend", Description: "Suspend cronjob"},
+			{Key: "re", Label: "Resume", Description: "Resume cronjob"},
+			{Key: "e", Label: "Edit", Description: "Edit resource"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete resource"},
+		}
+	case "ingress", "ingresses", "ing":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "e", Label: "Edit", Description: "Edit resource"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete resource"},
+		}
+	case "persistentvolumeclaim", "persistentvolumeclaims", "pvc":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "e", Label: "Edit", Description: "Edit (expand storage)"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete PVC"},
+		}
+	case "persistentvolume", "persistentvolumes", "pv":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+		}
+	case "horizontalpodautoscaler", "horizontalpodautoscalers", "hpa":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "e", Label: "Edit", Description: "Edit HPA targets"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete HPA"},
+		}
+	case "event", "events", "ev":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show event details"},
+		}
+	case "replicaset", "replicasets", "rs":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "s", Label: "Scale", Description: "Scale replicas"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete resource"},
+		}
+	case "serviceaccount", "serviceaccounts", "sa":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete resource"},
+		}
+	case "endpoints", "ep":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+		}
+	case "networkpolicy", "networkpolicies", "netpol":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "e", Label: "Edit", Description: "Edit policy"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete policy"},
+		}
+	case "role", "roles":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete role"},
+		}
+	case "rolebinding", "rolebindings":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+			{Key: "del", Label: "Delete", Description: "Delete binding"},
+		}
+	case "clusterrole", "clusterroles":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+		}
+	case "clusterrolebinding", "clusterrolebindings":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+		}
+	case "storageclass", "storageclasses", "sc":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+		}
+	case "limitrange", "limitranges":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+		}
+	case "resourcequota", "resourcequotas":
+		return []resourceAction{
+			{Key: "d", Label: "Describe", Description: "Show detailed info"},
+			{Key: "e", Label: "Edit", Description: "Edit quota"},
+			{Key: "y", Label: "YAML", Description: "Show YAML manifest"},
+		}
 	default:
 		return []resourceAction{
 			{Key: "d", Label: "Describe", Description: "Show detailed info"},
@@ -234,6 +360,10 @@ func (a *app) buildActionArgs(resourceType, name, namespace, action string, acti
 		return append([]string{"drain", name, "--ignore-daemonsets", "--delete-emptydir-data"}, nsArgs...)
 	case "sw":
 		return []string{"config", "set-context", "--current", "--namespace", name}
+	case "su":
+		return append([]string{"patch", resourceRef, "-p", `{"spec":{"suspend":true}}`}, nsArgs...)
+	case "re":
+		return append([]string{"patch", resourceRef, "-p", `{"spec":{"suspend":false}}`}, nsArgs...)
 	default:
 		return nil
 	}
@@ -268,6 +398,34 @@ func singularResourceType(resourceType string) string {
 		return "cronjob"
 	case "serviceaccounts", "sa":
 		return "serviceaccount"
+	case "replicasets", "rs":
+		return "replicaset"
+	case "endpoints", "ep":
+		return "endpoints" // endpoints is already singular in k8s
+	case "horizontalpodautoscalers", "hpa":
+		return "horizontalpodautoscaler"
+	case "networkpolicies", "netpol":
+		return "networkpolicy"
+	case "roles":
+		return "role"
+	case "rolebindings":
+		return "rolebinding"
+	case "clusterroles":
+		return "clusterrole"
+	case "clusterrolebindings":
+		return "clusterrolebinding"
+	case "storageclasses", "sc":
+		return "storageclass"
+	case "persistentvolumeclaims", "pvc":
+		return "persistentvolumeclaim"
+	case "persistentvolumes", "pv":
+		return "persistentvolume"
+	case "events", "ev":
+		return "event"
+	case "limitranges":
+		return "limitrange"
+	case "resourcequotas":
+		return "resourcequota"
 	default:
 		return strings.TrimSuffix(rt, "s")
 	}
