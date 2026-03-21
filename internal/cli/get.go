@@ -399,6 +399,81 @@ func (a *app) runEnhancedGet(args []string) error {
 	return kubectlpkg.EnhancedGet(kubeconfigPath, a.context, namespace, resource, modifiers, allNamespaces, sortBy, outputFormat)
 }
 
+// runInteractiveAfterGet extracts resource type and namespace from args,
+// queries resource names via kubectl, and enters interactive selection mode.
+func (a *app) runInteractiveAfterGet(args []string) error {
+	// Extract resource type and namespace from args
+	resourceType := ""
+	namespace := a.namespace
+	allNS := false
+	for i, arg := range args {
+		arg = strings.TrimSpace(arg)
+		if arg == "-A" || arg == "--all-namespaces" {
+			allNS = true
+			continue
+		}
+		if (arg == "-n" || arg == "--namespace") && i+1 < len(args) {
+			namespace = args[i+1]
+			continue
+		}
+		if strings.HasPrefix(arg, "-") {
+			continue
+		}
+		if resourceType == "" {
+			resourceType = arg
+		}
+	}
+
+	if resourceType == "" {
+		return nil
+	}
+
+	// Resolve namespace
+	kubeconfigPath := a.kubeconfig
+	if kubeconfigPath == "" {
+		kubeconfigPath = os.Getenv("KUBECONFIG")
+		if kubeconfigPath == "" {
+			home, _ := os.UserHomeDir()
+			kubeconfigPath = home + "/.kube/config"
+		}
+	}
+	if namespace == "" && !allNS {
+		namespace = resolveCurrentNamespace(kubeconfigPath, a.context)
+	}
+
+	// Query resource names via kubectl
+	nsFlag := ""
+	if allNS {
+		nsFlag = "-A"
+	} else if namespace != "" {
+		nsFlag = "-n " + namespace
+	}
+
+	cmdStr := fmt.Sprintf("get %s -o jsonpath='{range .items[*]}{.metadata.namespace}{\"\\t\"}{.metadata.name}{\"\\n\"}{end}' %s", resourceType, nsFlag)
+	out, err := a.captureKubectl(strings.Fields(cmdStr))
+	if err != nil {
+		return nil // silently skip interactive if query fails
+	}
+
+	var names, namespaces []string
+	for _, line := range strings.Split(strings.TrimSpace(out), "\n") {
+		parts := strings.SplitN(strings.TrimSpace(line), "\t", 2)
+		if len(parts) == 2 && parts[1] != "" {
+			namespaces = append(namespaces, parts[0])
+			names = append(names, parts[1])
+		} else if len(parts) == 1 && parts[0] != "" {
+			names = append(names, parts[0])
+			namespaces = append(namespaces, namespace)
+		}
+	}
+
+	if len(names) == 0 {
+		return nil
+	}
+
+	return a.interactiveResourceSelect(resourceType, names, namespaces)
+}
+
 // resolveCurrentNamespace reads the kubeconfig to determine the namespace
 // configured for the current (or overridden) context. Returns "default" if
 // no namespace is set in the kubeconfig context.
@@ -452,6 +527,12 @@ Important flags (all pass through to kubectl):
   --ignore-not-found               Return exit code 0 even if not found
   --field-selector=SELECTOR        Server-side field filter (e.g. status.phase=Running)
 
+kcli-specific flags:
+
+  -i, --interactive              After listing, enter interactive mode:
+                                 select a resource by # and perform actions
+                                 (logs, describe, exec, edit, delete, etc.)
+
 Multi-cluster flags (kcli-specific, stripped before forwarding):
 
   --context=NAME   Override the kubectl context for this command
@@ -483,6 +564,11 @@ Examples:
   # Get the scale subresource
   kcli get deployment/api --subresource=scale -o json
 
+  # Interactive mode — select a resource and perform actions
+  kcli get pods -i                   # table + action menu (logs, describe, exec...)
+  kcli get deployments -i            # scale, restart, edit...
+  kcli get nodes -i                  # cordon, drain, describe...
+
   # Multi-cluster get (kcli feature)
   kcli get pods --context=prod-east --context=prod-west`,
 		GroupID:            "core",
@@ -494,19 +580,43 @@ Examples:
 			}
 			defer restore()
 
+			// Check for -i / --interactive flag
+			interactive := false
+			var cleanNoI []string
+			for _, arg := range clean {
+				if arg == "-i" || arg == "--interactive" {
+					interactive = true
+				} else {
+					cleanNoI = append(cleanNoI, arg)
+				}
+			}
+			if interactive {
+				clean = cleanNoI
+			}
+
 			// "with" modifier support: kcli get pods with ip,node
 			if hasWithModifier(clean) {
-				return a.runEnhancedGet(clean)
+				if err := a.runEnhancedGet(clean); err != nil {
+					return err
+				}
+				if interactive {
+					return a.runInteractiveAfterGet(clean)
+				}
+				return nil
 			}
 
 			// Enhanced table output: when the user runs a simple list command
 			// on a TTY (e.g. "kcli get pods", "kcli get deployments -A"),
 			// route through the enhanced engine for colored tables with
 			// status icons, responsive columns, and presentation-ready output.
-			// Falls back to kubectl passthrough for piped output, -o json/yaml,
-			// --watch, or specific resource names (pods/my-pod).
 			if shouldUseEnhancedGet(clean) {
-				return a.runEnhancedGet(clean)
+				if err := a.runEnhancedGet(clean); err != nil {
+					return err
+				}
+				if interactive {
+					return a.runInteractiveAfterGet(clean)
+				}
+				return nil
 			}
 
 			// P1-5: Crash hint annotation for kubectl passthrough path.

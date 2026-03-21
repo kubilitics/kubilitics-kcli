@@ -54,6 +54,7 @@ func NewResourceTable(opts ResourceTableOpts) *Table {
 
 	switch opts.Scope {
 	case ScopeNamespaced:
+		table.NSColIdx = len(table.Columns) // track NAMESPACE column index
 		table.AddColumn(Column{
 			Name:     "NAMESPACE",
 			Priority: PriorityContext,
@@ -90,6 +91,7 @@ func (t *Table) AddNameColumn(names ...string) {
 	if len(names) > 0 && names[0] != "" {
 		name = names[0]
 	}
+	t.NameColIdx = len(t.Columns) // track NAME column index for interactive mode
 	t.AddColumn(Column{
 		Name:     name,
 		Priority: PriorityAlways,

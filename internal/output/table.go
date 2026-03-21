@@ -47,6 +47,37 @@ type Table struct {
 	FooterRow  []string
 	AutoNumber bool // when true, # column values are auto-populated during Render
 	mu         sync.RWMutex
+
+	// NameColIdx and NSColIdx track which column indices hold resource name and
+	// namespace data. Set by NewResourceTable to enable interactive mode.
+	NameColIdx int
+	NSColIdx   int
+}
+
+// ResourceNames returns the NAME column values from all rows (for interactive mode).
+func (t *Table) ResourceNames() []string {
+	t.mu.RLock()
+	defer t.mu.RUnlock()
+	names := make([]string, 0, len(t.Rows))
+	for _, row := range t.Rows {
+		if t.NameColIdx < len(row) {
+			names = append(names, row[t.NameColIdx])
+		}
+	}
+	return names
+}
+
+// ResourceNamespaces returns the NAMESPACE column values from all rows.
+func (t *Table) ResourceNamespaces() []string {
+	t.mu.RLock()
+	defer t.mu.RUnlock()
+	nss := make([]string, 0, len(t.Rows))
+	for _, row := range t.Rows {
+		if t.NSColIdx < len(row) {
+			nss = append(nss, row[t.NSColIdx])
+		}
+	}
+	return nss
 }
 
 func NewTable() *Table {
